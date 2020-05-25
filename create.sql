@@ -5,7 +5,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE books (
-    isbn INTEGER PRIMARY KEY,
+    isbn VARCHAR PRIMARY KEY,
     title VARCHAR NOT NULL,
     author VARCHAR NOT NULL,
     pub_yr INTEGER,
@@ -15,7 +15,7 @@ CREATE TABLE books (
 
 CREATE TABLE reviews (
     user_id INTEGER REFERENCES users,
-    book_isbn INTEGER REFERENCES books,
+    book_isbn VARCHAR REFERENCES books,
     text_opinion VARCHAR NOT NULL,
     rating INTEGER NOT NULL check(rating >= 0 and rating <= 5)
 );

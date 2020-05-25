@@ -23,6 +23,7 @@ def main():
                     {"isbn": isbn, "title": title, "author": author, "pub_yr": pub_yr})
         print(f"Added {title} by {author} written in {pub_yr} with isbn {isbn}")
     db.commit()
+    print("All books added successfully!!!")
 
 if __name__ == "__main__":
     main()
