@@ -1,29 +1,30 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Flights
+    Login
 {% endblock %}
 
 {% block body %}
-    <h1>Book a Flight</h1>
+    <h1>Please enter your login information</h1>
 
-    <form action="{{ url_for('book') }}" method="post">
-
+    <form action="{{ url_for('register') }}" method="post">
         <div class="form-group">
-            <select class="form-control" name="flight_id">
-                {% for flight in flights %}
-                    <option value="{{ flight.id }}">{{ flight.origin }} to {{ flight.destination }}</option>
-                {% endfor %}
-            </select>
+          <label for="username">Username</label>
+          <input type="text" class="form-control" id="username" placeholder="Username">
         </div>
 
         <div class="form-group">
-            <input class="form-control" name="name" placeholder="Passenger Name">
+          <label for="pword">Password</label>
+          <input type="password" class="form-control" id="pword" placeholder="Password">
         </div>
-
-        <div class="form-group">
-            <button class="btn btn-primary">Book Flight</button>
+        
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    
+    <form action="{{ url_for('register') }}">
+        <div class="register-button">
+            <h6>Don't have an account yet?</h6>
+            <button type="submit" class="btn btn-secondary">Create an account</button>
         </div>
-
     </form>
 {% endblock %}
