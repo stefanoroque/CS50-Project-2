@@ -43,6 +43,12 @@ def accountCreation():
     print("-----------")
 
     #TODO: now need to make sure username is not taken, and password is acceptable
+    if db.execute("SELECT * FROM users WHERE username = :username", {"username": desired_username}).rowcount != 0:
+        return render_template("registrationError.html", message="That username is already taken. Please choose a different username.")
+    db.execute("INSERT INTO users (username, pword) VALUES (:username, :pword)",
+            {"username": desired_username, "pword": pword})
+    db.commit()
+
     #TODO: create another user in the database with this info
 
     # try:
