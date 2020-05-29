@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Error
+{% endblock %}
+
+{% block body %}
+    <h1>Error</h1>
+
+    {{ message }}
+
+    <form action="{{ url_for('index') }}">
+        <div class="index-button">
+            <button type="submit" class="btn btn-secondary">Back to Login Page</button>
+        </div>
+    </form>
+{% endblock %}
