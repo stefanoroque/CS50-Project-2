@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Book
+{% endblock %}
+
+{% block body %}
+    <h1>Book Details</h1>
+
+    <ul>
+        <li>ISBN: {{ book.isbn }}</li>
+        <li>Title: {{ book.title }}</li>
+        <li>Author: {{ book.author }}</li>
+        <li>Publication Year: {{ book.pub_yr }}</li>
+    </ul>
+
+    <h2>Reviews</h2>
+    <ul>
+        <li>Review Count: {{ book.review_count }}</li>
+        <li>Average Review Score: {{ book.avg_score }}</li>
+
+        <!-- {% for passenger in passengers %}
+            <li>{{ passenger.name }}</li>
+        {% else %}
+            <li>No passengers.</li>
+        {% endfor %} -->
+    </ul>
+
+{% endblock %}

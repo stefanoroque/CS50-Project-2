@@ -27,7 +27,7 @@ def index():
 
 @app.route("/loginAttempt", methods=["POST"])
 def loginAttempt():
-    """Search for a book."""
+    """Attempt to login to the site."""
 
     username = request.form.get("username")
     pword = request.form.get("pword")
@@ -35,7 +35,43 @@ def loginAttempt():
     if db.execute("SELECT * FROM users WHERE username = :username AND pword = :pword", {"username": username, "pword": pword}).rowcount == 0:  
         return render_template("loginError.html", message="Incorrect username or password.")
 
-    return render_template("loginError.html", message="LOGGED IN")
+    return render_template("search.html")
+
+@app.route("/search", methods=["POST"])
+def search():
+    """User Searches for a book in the DB."""
+
+    category = request.form.get("category")
+    keyword = request.form.get("keyword")
+
+    if category == "isbn":
+        books = db.execute("SELECT * FROM books WHERE isbn = :isbn",
+                            {"isbn": keyword}).fetchall()
+        return render_template("results.html", books=books)
+
+    elif category == "title":
+        pass
+        #TODO
+
+    elif category == "author":
+        pass
+        #TODO
+
+    else:
+        return render_template("search.html", missing_category=True)
+
+@app.route("/book/<string:book_isbn>")
+def book(book_isbn):
+    """Lists details about a single book."""
+
+    # Make sure flight exists.
+    book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()
+    if book is None:
+        return render_template("error.html", message="No such flight.")
+
+    return render_template("book.html", book=book)
+
+
 
 @app.route("/register")
 def register():
@@ -53,6 +89,7 @@ def accountCreation():
     # Make sure username is not taken
     if db.execute("SELECT * FROM users WHERE username = :username", {"username": desired_username}).rowcount != 0:
         return render_template("registrationError.html", message="That username is already taken. Please choose a different username.")
+    
     db.execute("INSERT INTO users (username, pword) VALUES (:username, :pword)",
             {"username": desired_username, "pword": pword})
 
