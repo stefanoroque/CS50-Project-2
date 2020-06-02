@@ -78,7 +78,20 @@ def book(book_isbn):
 
     return render_template("book.html", book=book)
 
+@app.route("/reviewSubmission", methods=["POST"])
+def reviewSubmission():
+    """User leaves a review on a book."""
 
+    text_review = request.form.get("text_review")
+    rating = request.form.get("rating")
+
+    #TODO: need to make sure user id and book isbn is passed into this function (maybe use useer session??)
+
+    #TODO: make sure text field is used
+    #TODO: make sure rating selected
+
+    #TODO: add review to DB
+    #TODO: modify review count and average score for selected book
 
 @app.route("/register")
 def register():

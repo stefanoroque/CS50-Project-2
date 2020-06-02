@@ -5,6 +5,12 @@
 {% endblock %}
 
 {% block body %}
+    {% if no_book_found %}
+    <div class="alert alert-success">
+        <strong>Success!</strong> You have successfully left a review.
+    </div>
+    {% endif %}
+
     <h1>Book Details</h1>
 
     <ul>
@@ -25,6 +31,30 @@
             <li>No passengers.</li>
         {% endfor %} -->
     </ul>
+
+    <h3>Submit a review for this book</h3>
+    <form action="{{ url_for('reviewSubmission') }}">
+        <div class="form-group">
+            <label for="review">Review</label>
+            <input type="text" class="form-control" name="text_review" placeholder="Write your review here">
+        </div>
+
+        <div class="form-group">
+            <label for="rating">Rating</label>
+            <select class="browser-default custom-select" name="rating">
+                <option selected>Choose a rating from 1 to 5</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+            
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+
+
 
     <form action="{{ url_for('index') }}">
         <div class="index-button">
