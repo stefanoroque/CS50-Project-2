@@ -17,4 +17,10 @@
         {% endfor %}
     </ul>
 
+    <form action="{{ url_for('index') }}">
+        <div class="index-button">
+            <button type="submit" class="btn btn-warning">Logout</button>
+        </div>
+    </form>
+
 {% endblock %}
