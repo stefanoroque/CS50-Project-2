@@ -45,20 +45,27 @@ def search():
     keyword = request.form.get("keyword")
 
     if category == "isbn":
-        books = db.execute("SELECT * FROM books WHERE isbn = :isbn",
-                            {"isbn": keyword}).fetchall()
-        return render_template("results.html", books=books)
+        keyword = keyword.upper()
+        books = db.execute("SELECT * FROM books WHERE isbn LIKE :isbn",
+                            {"isbn": '%' + keyword + '%'}).fetchall()
 
     elif category == "title":
-        pass
-        #TODO
+        keyword = keyword.capitalize()
+        books = db.execute("SELECT * FROM books WHERE title LIKE :title",
+                            {"title": '%' + keyword + '%'}).fetchall()
 
     elif category == "author":
-        pass
-        #TODO
-
+        keyword = keyword.capitalize()
+        books = db.execute("SELECT * FROM books WHERE author LIKE :author",
+                            {"author": '%' + keyword + '%'}).fetchall()
+        
     else:
         return render_template("search.html", missing_category=True)
+    
+    if books == []:
+        return render_template("search.html", no_book_found=True)
+    else:
+        return render_template("results.html", books=books)
 
 @app.route("/book/<string:book_isbn>")
 def book(book_isbn):

@@ -13,6 +13,12 @@
          </div>
     {% endif %}
 
+    {% if no_book_found %}
+        <div class="alert alert-warning">
+            <strong>Warning!</strong> No book that matched the search criteria could be found
+         </div>
+    {% endif %}
+
     <form action="{{ url_for('search') }}" method="post">
         <div class="form-group">
             <select class="browser-default custom-select" name="category">
