@@ -32,8 +32,14 @@ def loginAttempt():
     username = request.form.get("username")
     pword = request.form.get("pword")
 
-    if db.execute("SELECT * FROM users WHERE username = :username AND pword = :pword", {"username": username, "pword": pword}).rowcount == 0:  
+    user_info = db.execute("SELECT * FROM users WHERE username = :username AND pword = :pword", {"username": username, "pword": pword})
+
+    if user_info.rowcount == 0:  
         return render_template("loginError.html", message="Incorrect username or password.")
+
+
+    # Set session variable for the user's id
+    session["user_id"] = user_info.fetchone().id
 
     return render_template("search.html")
 
@@ -61,6 +67,8 @@ def search():
         
     else:
         return render_template("search.html", missing_category=True)
+
+    #TODO: MAKE SURE TEXT BOX IS NOT EMPTY STRING
     
     if books == []:
         return render_template("search.html", no_book_found=True)
@@ -71,10 +79,13 @@ def search():
 def book(book_isbn):
     """Lists details about a single book."""
 
-    # Make sure flight exists.
+    # Make sure book exists.
     book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()
     if book is None:
-        return render_template("error.html", message="No such flight.")
+        return render_template("error.html", message="No such book.")
+    
+    # Update the session variable for book to the most recently viewed book
+    session["book"] = book
 
     return render_template("book.html", book=book)
 
@@ -83,15 +94,42 @@ def reviewSubmission():
     """User leaves a review on a book."""
 
     text_review = request.form.get("text_review")
-    rating = request.form.get("rating")
+    rating = int(request.form.get("rating"))
+    book = session["book"]
 
-    #TODO: need to make sure user id and book isbn is passed into this function (maybe use useer session??)
+    # Make sure the text field is used
+    if text_review == "":
+        return render_template("book.html", book=book, empty_text_review=True)
 
-    #TODO: make sure text field is used
-    #TODO: make sure rating selected
+    # Make sure a rating was chosen
+    if rating == "Choose a rating from 1 to 5":
+        return render_template("book.html", book=book, no_rating=True)
 
-    #TODO: add review to DB
+    # Make sure user has not already reviewed this book
+    if db.execute("SELECT * FROM reviews WHERE user_id = :user_id AND book_isbn = :book_isbn", {"user_id": session["user_id"], "book_isbn": session["book"].isbn}).rowcount != 0:
+        return render_template("book.html", book=book, already_reviewed=True)
+
+    db.execute("INSERT INTO reviews (user_id, book_isbn, text_opinion, rating) VALUES (:user_id, :book_isbn, :text_opinion, :rating)",
+            {"user_id": session["user_id"], "book_isbn": session["book"].isbn, "text_opinion": text_review, "rating": rating})
+
     #TODO: modify review count and average score for selected book
+    # This is the first review of the book
+    if session["book"].review_count is None:
+        db.execute("UPDATE books SET review_count = 1, avg_score = :rating WHERE isbn = :book_isbn", {"rating": rating, "book_isbn": session["book"].isbn})
+
+    else:
+        new_review_count = session["book"].review_count + 1
+        new_avg_score = (session["book"].review_count * session["book"].avg_score + rating) / new_review_count
+        db.execute("UPDATE books SET review_count = :new_review_count, avg_score = :new_avg_score WHERE isbn = :book_isbn", {"new_review_count": new_review_count, "new_avg_score": new_avg_score, "book_isbn": session["book"].isbn})
+
+    db.commit()
+
+    # Update the book session object so we have the updated review count and avg_score
+    book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": session["book"].isbn}).fetchone()
+    session["book"] = book
+
+    return render_template("book.html", book=book, review_submission_successful=True)
+
 
 @app.route("/register")
 def register():

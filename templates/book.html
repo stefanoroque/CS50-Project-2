@@ -5,9 +5,27 @@
 {% endblock %}
 
 {% block body %}
-    {% if no_book_found %}
+    {% if review_submission_successful %}
     <div class="alert alert-success">
         <strong>Success!</strong> You have successfully left a review.
+    </div>
+    {% endif %}
+
+    {% if empty_text_review %}
+    <div class="alert alert-warning">
+        <strong>Warning!</strong> You cannot leave an empty review.
+    </div>
+    {% endif %}
+
+    {% if no_rating %}
+    <div class="alert alert-warning">
+        <strong>Warning!</strong> You must choose a rating from 1 to 5.
+    </div>
+    {% endif %}
+
+    {% if already_reviewed %}
+    <div class="alert alert-warning">
+        <strong>Warning!</strong> You cannot submit multiple reviews for the same book.
     </div>
     {% endif %}
 
@@ -33,7 +51,7 @@
     </ul>
 
     <h3>Submit a review for this book</h3>
-    <form action="{{ url_for('reviewSubmission') }}">
+    <form action="{{ url_for('reviewSubmission') }}" method="post">
         <div class="form-group">
             <label for="review">Review</label>
             <input type="text" class="form-control" name="text_review" placeholder="Write your review here">
