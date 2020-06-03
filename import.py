@@ -4,7 +4,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-engine = create_engine("postgres://gtxdubrxzbnzmk:63ac9ab681fdced525b0cba7fbeb7c04eef07192dac6309955cda15fecf7084f@ec2-18-214-211-47.compute-1.amazonaws.com:5432/d1js80b39pfvan")
+engine = create_engine("postgres://ryrmnnlocwkikr:7474a4338387f21e422b38960226d79bea3d1ee85c4d213fe17b90d48acea52f@ec2-54-234-28-165.compute-1.amazonaws.com:5432/dea8evbomlivbl")
 #engine = create_engine(os.getenv("postgres://gtxdubrxzbnzmk:63ac9ab681fdced525b0cba7fbeb7c04eef07192dac6309955cda15fecf7084f@ec2-18-214-211-47.compute-1.amazonaws.com:5432/d1js80b39pfvan"))
 db = scoped_session(sessionmaker(bind=engine))
 
