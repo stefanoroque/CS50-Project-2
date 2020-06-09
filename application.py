@@ -1,4 +1,5 @@
 import os
+import requests
 
 from flask import Flask, session, render_template, request
 from flask_session import Session
@@ -88,10 +89,10 @@ def book(book_isbn):
     session["book"] = book
 
     reviews = db.execute("SELECT username, text_opinion, rating FROM (SELECT * FROM reviews WHERE book_isbn=:isbn) AS r INNER JOIN users ON r.user_id=users.id", {"isbn": book_isbn}).fetchall()
-    print("++++")
-    print(reviews)
+    
+    goodreads_data = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "rILdgDWSEATeXeNiwPOzw", "isbns": book_isbn}).json()["books"][0] # Index 0 since there should only be a single book returned
 
-    return render_template("book.html", book=book, reviews=reviews)
+    return render_template("book.html", book=book, reviews=reviews, goodreads_data=goodreads_data)
 
 @app.route("/reviewSubmission", methods=["POST"])
 def reviewSubmission():
@@ -100,23 +101,24 @@ def reviewSubmission():
     book = session["book"]
     book_isbn = book.isbn
     reviews = db.execute("SELECT username, text_opinion, rating FROM (SELECT * FROM reviews WHERE book_isbn=:isbn) AS r INNER JOIN users ON r.user_id=users.id", {"isbn": book_isbn}).fetchall()
+    goodreads_data = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "rILdgDWSEATeXeNiwPOzw", "isbns": book_isbn}).json()["books"][0] # Index 0 since there should only be a single book returned
 
     text_review = request.form.get("text_review")
 
     # Make sure a rating was chosen
     rating = request.form.get("rating")
     if rating == "Choose a rating from 1 to 5":
-        return render_template("book.html", book=book, reviews=reviews, no_rating=True)
+        return render_template("book.html", book=book, reviews=reviews, goodreads_data=goodreads_data, no_rating=True)
     else:
         rating = int(rating)
 
     # Make sure the text field is used
     if text_review == "":
-        return render_template("book.html", book=book, reviews=reviews, empty_text_review=True)
+        return render_template("book.html", book=book, reviews=reviews, goodreads_data=goodreads_data, empty_text_review=True)
 
     # Make sure user has not already reviewed this book
     if db.execute("SELECT * FROM reviews WHERE user_id = :user_id AND book_isbn = :book_isbn", {"user_id": session["user_id"], "book_isbn": session["book"].isbn}).rowcount != 0:
-        return render_template("book.html", book=book, reviews=reviews, already_reviewed=True)
+        return render_template("book.html", book=book, reviews=reviews, goodreads_data=goodreads_data, already_reviewed=True)
 
     db.execute("INSERT INTO reviews (user_id, book_isbn, text_opinion, rating) VALUES (:user_id, :book_isbn, :text_opinion, :rating)",
             {"user_id": session["user_id"], "book_isbn": session["book"].isbn, "text_opinion": text_review, "rating": rating})
@@ -139,7 +141,7 @@ def reviewSubmission():
     reviews = db.execute("SELECT username, text_opinion, rating FROM (SELECT * FROM reviews WHERE book_isbn=:isbn) AS r INNER JOIN users ON r.user_id=users.id", {"isbn": book_isbn}).fetchall()
 
 
-    return render_template("book.html", book=book, reviews=reviews, review_submission_successful=True)
+    return render_template("book.html", book=book, reviews=reviews, goodreads_data=goodreads_data, review_submission_successful=True)
 
 
 @app.route("/register")

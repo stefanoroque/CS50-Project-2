@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Book
+    {{ book.title }}
 {% endblock %}
 
 {% block body %}
@@ -53,11 +53,11 @@
             <li>No reviews for this book.</li>
         {% endfor %}
 
-        <!-- {% for passenger in passengers %}
-            <li>{{ passenger.name }}</li>
-        {% else %}
-            <li>No passengers.</li>
-        {% endfor %} -->
+    <h2>Goodreads Review Data</h2>
+    <ul>
+        <li>Number of Ratings: {{ goodreads_data["work_ratings_count"] }}</li>
+        <li>Average Rating: {{ goodreads_data["average_rating"] }}</li>
+    </ul>
     
 
     <h3>Submit a review for this book</h3>
