@@ -13,6 +13,12 @@
          </div>
     {% endif %}
 
+    {% if no_keyword %}
+        <div class="alert alert-warning">
+            <strong>Warning!</strong> Please enter a keyword to search by
+         </div>
+    {% endif %}
+
     {% if no_book_found %}
         <div class="alert alert-warning">
             <strong>Warning!</strong> No book that matched the search criteria could be found.

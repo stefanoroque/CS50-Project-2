@@ -50,14 +50,19 @@
                     <li>{{ review.rating }}</li>
                 </ul>
         {% else %}
-            <li>No reviews for this book.</li>
+            <h6>No reviews for this book.</h6>
         {% endfor %}
 
     <h2>Goodreads Review Data</h2>
+    <!-- #TODO: make message if api does not return anything -->
+    {% if not goodreads_data %}
+        <h6>Goodreads data is unavailable for this book</h6>
+    {% else %}
     <ul>
         <li>Number of Ratings: {{ goodreads_data["work_ratings_count"] }}</li>
         <li>Average Rating: {{ goodreads_data["average_rating"] }}</li>
     </ul>
+    {% endif %}
     
 
     <h3>Submit a review for this book</h3>

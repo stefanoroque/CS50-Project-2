@@ -51,6 +51,9 @@ def search():
     category = request.form.get("category")
     keyword = request.form.get("keyword")
 
+    if keyword == "":
+        return render_template("search.html", no_keyword=True)
+
     if category == "isbn":
         keyword = keyword.upper()
         books = db.execute("SELECT * FROM books WHERE isbn LIKE :isbn",
@@ -68,8 +71,6 @@ def search():
         
     else:
         return render_template("search.html", missing_category=True)
-
-    #TODO: MAKE SURE TEXT BOX IS NOT EMPTY STRING
     
     if books == []:
         return render_template("search.html", no_book_found=True)
@@ -90,8 +91,13 @@ def book(book_isbn):
 
     reviews = db.execute("SELECT username, text_opinion, rating FROM (SELECT * FROM reviews WHERE book_isbn=:isbn) AS r INNER JOIN users ON r.user_id=users.id", {"isbn": book_isbn}).fetchall()
     
-    goodreads_data = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "rILdgDWSEATeXeNiwPOzw", "isbns": book_isbn}).json()["books"][0] # Index 0 since there should only be a single book returned
+    goodreads_data = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "rILdgDWSEATeXeNiwPOzw", "isbns": book_isbn})
+    if goodreads_data.status_code == 404:
+        goodreads_data = False
+    else:
+        goodreads_data = goodreads_data.json()["books"][0] # Index 0 since there should only be a single book returned
 
+    
     return render_template("book.html", book=book, reviews=reviews, goodreads_data=goodreads_data)
 
 @app.route("/reviewSubmission", methods=["POST"])
@@ -101,7 +107,12 @@ def reviewSubmission():
     book = session["book"]
     book_isbn = book.isbn
     reviews = db.execute("SELECT username, text_opinion, rating FROM (SELECT * FROM reviews WHERE book_isbn=:isbn) AS r INNER JOIN users ON r.user_id=users.id", {"isbn": book_isbn}).fetchall()
-    goodreads_data = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "rILdgDWSEATeXeNiwPOzw", "isbns": book_isbn}).json()["books"][0] # Index 0 since there should only be a single book returned
+
+    goodreads_data = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "rILdgDWSEATeXeNiwPOzw", "isbns": book_isbn})
+    if goodreads_data.status_code == 404:
+        goodreads_data = False
+    else:
+        goodreads_data = goodreads_data.json()["books"][0] # Index 0 since there should only be a single book returned
 
     text_review = request.form.get("text_review")
 
