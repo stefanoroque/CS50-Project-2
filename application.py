@@ -44,7 +44,7 @@ def loginAttempt():
 
     return render_template("search.html")
 
-@app.route("/search", methods=["POST"])
+@app.route("/search", methods=["POST", "GET"])
 def search():
     """User Searches for a book in the DB."""
 
