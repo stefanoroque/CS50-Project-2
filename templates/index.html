@@ -22,9 +22,13 @@
     </form>
     
     <form action="{{ url_for('register') }}">
-        <div class="register-button">
-            <h6>Don't have an account yet?</h6>
+        <div class="register-button" style=“margin-top:50px;”>
+            <h5>Don't have an account yet?</h5>
             <button type="submit" class="btn btn-secondary">Create an account</button>
         </div>
     </form>
+
+    <style>
+        .register-button {margin-top:50px;}
+    </style>
 {% endblock %}

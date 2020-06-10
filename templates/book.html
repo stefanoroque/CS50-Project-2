@@ -32,29 +32,33 @@
     <h1>Book Details</h1>
 
     <ul>
-        <li>ISBN: {{ book.isbn }}</li>
-        <li>Title: {{ book.title }}</li>
-        <li>Author: {{ book.author }}</li>
-        <li>Publication Year: {{ book.pub_yr }}</li>
-
-        <li>Review Count: {{ book.review_count }}</li>
-        <li>Average Review Score: {{ book.avg_score }}</li>
+        <li><b>ISBN:</b> {{ book.isbn }}</li>
+        <li><b>Title:</b> {{ book.title }}</li>
+        <li><b>Author:</b> {{ book.author }}</li>
+        <li><b>Publication Year:</b> {{ book.pub_yr }}</li>
+        <li><b>Review Count:</b> {{ book.review_count }}</li>
+        <li><b>Average Review Score:</b> {{ book.avg_score }}</li>
     </ul>
 
-    <h2>Reviews</h2>
     
+    <h2>Reviews</h2>
         {% for review in reviews %}
-            <h5>{{ review.username }}</h5>
-                <ul>
-                    <li>{{ review.text_opinion }}</li>
-                    <li>{{ review.rating }}</li>
-                </ul>
+            <div id="user-reviews">
+                <h5><u>{{ review.username }}</u></h5>
+                    <dl>
+                        <dt>Rating:
+                        <dd>{{ review.rating }}
+                        <dt>Review:
+                        <dd>{{ review.text_opinion }}
+                    </dl>
+            </div>
         {% else %}
             <h6>No reviews for this book.</h6>
+        
         {% endfor %}
+    
 
     <h2>Goodreads Review Data</h2>
-    <!-- #TODO: make message if api does not return anything -->
     {% if not goodreads_data %}
         <h6>Goodreads data is unavailable for this book</h6>
     {% else %}
@@ -98,5 +102,11 @@
             <button type="submit" class="btn btn-warning">Logout</button>
         </div>
     </form>
+
+    <style>
+        div {margin-top:10px;}
+        #user-reviews {border:3px; border-style:solid; border-color:#707070; padding: 4px;}
+        .index-button {margin-top: 20;}
+    </style>
 
 {% endblock %}
