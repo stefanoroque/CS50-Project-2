@@ -1,7 +1,7 @@
 import os
 import requests
 
-from flask import Flask, session, render_template, request
+from flask import Flask, session, render_template, request, abort, jsonify
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -180,4 +180,18 @@ def accountCreation():
     return render_template("accountCreation.html")
 
 
+@app.route("/api/<string:book_isbn>", methods=["GET"])
+def api(book_isbn):
+    """Website's API route."""
 
+    # Make sure book exists.
+    book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()
+    if book is None:
+        return abort(404, description="Book not found")
+    
+    return jsonify(title=book.title,
+                   author=book.author,
+                   year=book.pub_yr,
+                   isbn=book.isbn,
+                   review_count=book.review_count,
+                   average_score=book.avg_score)
