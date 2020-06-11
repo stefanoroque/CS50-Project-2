@@ -11,3 +11,8 @@ Users are able to register for the website and then log in using their username 
 - import.py: Python script that was used to import the data from the CSV file into the database
 - requirements.txt: requirements file
 - templates folder: This folder contains all the HTML files that are used to create the UI of the website. Contains 11 HTML files
+
+##Important
+If you want to play around with this web app, you need to set the DATABASE_URL environment variable to "postgres://ryrmnnlocwkikr:7474a4338387f21e422b38960226d79bea3d1ee85c4d213fe17b90d48acea52f@ec2-54-234-28-165.compute-1.amazonaws.com:5432/dea8evbomlivbl" and the FLASK_APP environment variable to "application.py"
+
+Once you have done this simply run the command "flask run" in your terminal to lauch the web app
