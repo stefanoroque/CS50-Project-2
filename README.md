@@ -1,4 +1,4 @@
-# Project 1
+# Project 2
 
 This is a book review website that I made for my Harvard CS50 web programming course. It is not pretty, as the focus was more on the functionality of the site. I wanted to move onto the next project without spending too much time on the visual asthetic of this one. 
 
