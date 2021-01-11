@@ -4,6 +4,8 @@ This is a book review website that I made for my Harvard CS50 web programming co
 
 Users are able to register for the website and then log in using their username and password. Once they log in, they are able to search for books, leave reviews for individual books, and see the reviews made by other people. The site also uses the third-party API by Goodreads, another book review website, to pull in ratings from a broader audience. Finally, users are able to query for book details and book reviews programmatically via the website’s API.
 
+[Demo Video of Project](https://youtu.be/06AqsmoaUfw)
+
 ## What is contained in each file:
 - application.py: Main flask application that is the backend of the website
 - books.csv: CSV file that was used to populate the database
